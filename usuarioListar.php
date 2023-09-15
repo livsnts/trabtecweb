@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <?php
 //1. Conecta no banco de dados (IP, usuario, senha, nome do banco)
-require_once("verificaautenticacao.php");
 require_once("conexao.php");
 
 
