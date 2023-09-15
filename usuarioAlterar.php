@@ -8,12 +8,14 @@ if(isset($_POST['salvar'])){
     $id = $_POST['id'];
     $nome = $_POST['nome'];
     $email = $_POST['email'];
+    $usuariogrupo_id = $_POST['usuariogrupo_id'];
     
 
 //3. Prepara o SQL 
 $sql= "update usuario
 set nome= '$nome',
 email = '$email'
+usuariogrupo_id = '$usuariogrupo_id'
 where id = $id";
 
 //4. Executa SQL no BD
@@ -68,6 +70,26 @@ $linha = mysqli_fetch_array($resultado);
     <input type="email" class="form-control" id="email" name="email"
     value= "<?= $linha['email']?>">
   </div>
+
+  <div class="mb-3">
+    <label for="usuariogrupo_id" class="form-label"> Tipo de usuário </label>
+    <select class="form-select" id="usuariogrupo_id" name="usuariogrupo_id">
+    <option value="">--Selecione--</option>
+<?php
+$sql = "select * from usuariogrupo order by nome";
+$resultado = mysqli_query($conexao, $sql);
+
+while($linhaTU = mysqli_fetch_array($resultado)):
+  $id = $linhaTU['id'];
+  $nome = $linhaTU['nome'];
+
+  $selected = ($id == $linha['$usuariogrupo_id']) ? 'selected' : '';
+
+  echo "<option value='{$id}' {$selected}>{$nome}</option>";
+endwhile;
+?>
+    </select>
+ </div>
   
   <button style="background-color:#9AC791" name ="salvar" type="submit" class="btn btn-warning">&#x2713; Salvar</button>
   <button style="background-color:#9AC791" name ="voltar" type="reset" class="btn btn-warning">&#8634; Voltar</button>

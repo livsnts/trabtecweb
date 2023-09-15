@@ -8,9 +8,9 @@ if(isset($_POST['salvar'])){
     $diretorio = "uploads/";
     $arquivoDestino = $diretorio . $_FILES['arquivo']['name'];
 
-    //Envia o arquivo para o $arquivoDestino
+    $nomeArquivo = "";
     if(move_uploaded_file($_FILES['arquivo']['tmp_name'], $arquivoDestino)) {
-        echo "Arquivo enviado com sucesso.";
+        $nomeArquivo = $_FILES['arquivo']['name'];
     } else{
         echo "ERRO: Arquivo não enviado.";
     }
@@ -20,10 +20,11 @@ if(isset($_POST['salvar'])){
     $nome = $_POST['nome'];
     $email = $_POST['email'];
     $senha = $_POST['senha'];
+    $usuariogrupo_id = $_POST['usuariogrupo_id'];
 
     //3. preparar sql para inserir
-$sql= "insert into usuario (nome, email, senha)
-values ('$nome', '$email', '$senha')";
+$sql= "insert into usuario (nome, email, senha, arquivo, usuariogrupo_id)
+values ('$nome', '$email', '$senha', '$nomeArquivo', '$usuariogrupo_id')";
 
 //4. executar sql no bd
 mysqli_query($conexao,$sql);
@@ -58,7 +59,7 @@ $mensagem= "Registrado com sucesso &#x2713;";
 
 <h1>Cadastro de Usuário</h1>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
     <div class="mb-3">
     <label for="nome" class="form-label"> Nome </label>  
     <input type="text" class="form-control" id="nome" name="nome">   
@@ -71,6 +72,26 @@ $mensagem= "Registrado com sucesso &#x2713;";
     <label for="senha" class="form-label"> Senha </label>  
     <input type="password" class="form-control" id="senha" name="senha">   
   </div>
+
+  <div class="mb-3">
+    <label for="usuariogrupo_id" class="form-label"> Grupo de usuário </label>  
+    <select name="usuariogrupo_id" class="form-select">
+    <?php
+    $sql="select * from usuariogrupo order by nome";
+    $resultado= mysqli_query($conexao, $sql);
+
+    while($linha = mysqli_fetch_array($resultado)):
+      $id = $linha['id'];
+      $nome= $linha['nome'];
+
+      echo "<option value='{$id}'>{$nome}</option>";
+    endwhile;
+    ?>
+
+    </select>  
+  </div>
+
+
   <div class="mb-3">
     <label for="arquivo" class="form-label"> Foto </label>  
     <input type="file" class="form-control" id="arquivo" name="arquivo">   
